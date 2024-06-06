@@ -93,7 +93,7 @@ extern "C"
 #ifndef USE_DMM
 #include <ti/drivers/rf/RF.h>
 #else
-#include <zstack/HAL/RF/rf_mac_api.h>
+#include "rf_mac_api.h"
 #endif //USE_DMM
 #include DeviceFamily_constructPath(driverlib/rf_ieee_cmd.h)
 #include DeviceFamily_constructPath(driverlib/rf_prop_cmd.h)

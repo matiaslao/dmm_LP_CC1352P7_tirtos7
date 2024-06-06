@@ -79,6 +79,9 @@ extern "C"
 #define GENERICAPP_EVT_2                    0x0010
 #define GENERICAPP_EVT_3                    0x0020
 */
+#ifdef USE_DMM
+#define SAMPLEAPP_POLICY_UPDATE_EVT         0x0020
+#endif
 
 // Green Power Events
 #define SAMPLEAPP_PROCESS_GP_DATA_SEND_EVT              0x0100

@@ -40,10 +40,12 @@
 									<listOptionValue builtIn="false" value="${PROJECT_ROOT}/${ConfigName}"/>
 									<listOptionValue builtIn="false" value="${PROJECT_ROOT}/application"/>
 									<listOptionValue builtIn="false" value="${PROJECT_ROOT}/application/cui"/>
+									<listOptionValue builtIn="false" value="${PROJECT_ROOT}/application/prop"/>
 									<listOptionValue builtIn="false" value="${PROJECT_ROOT}/application/zb_router"/>
 									<listOptionValue builtIn="false" value="${PROJECT_ROOT}/application/zb_router/StackApi"/>
 									<listOptionValue builtIn="false" value="${PROJECT_ROOT}/application/zb_router/ui"/>
 									<listOptionValue builtIn="false" value="${PROJECT_ROOT}/application/zb_router/util"/>
+									<listOptionValue builtIn="false" value="${PROJECT_ROOT}/dmm"/>
 									<listOptionValue builtIn="false" value="${PROJECT_ROOT}/drivers/nv"/>
 									<listOptionValue builtIn="false" value="${PROJECT_ROOT}/software_stacks"/>
 									<listOptionValue builtIn="false" value="${PROJECT_ROOT}/software_stacks/ti15_4stack/hal/crypto"/>
@@ -102,6 +104,7 @@
 									<listOptionValue builtIn="false" value="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/ti/zstack/apps/genericapp"/>
 									<listOptionValue builtIn="false" value="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/ti/ti154stack/common/boards"/>
 									<listOptionValue builtIn="false" value="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source"/>
+									<listOptionValue builtIn="false" value="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/ti/dmm"/>
 									<listOptionValue builtIn="false" value="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/ti/devices/cc13x2_cc26x2"/>
 									<listOptionValue builtIn="false" value="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/ti/devices/cc13x2_cc26x2/inc"/>
 									<listOptionValue builtIn="false" value="${COM_TI_SIMPLELINK_CC13XX_CC26XX_SDK_INSTALL_DIR}/source/ti/devices/cc13x2_cc26x2/driverlib"/>
@@ -138,6 +141,7 @@
 									<listOptionValue builtIn="false" value="TIRTOS7_SUPPORT"/>
 									<listOptionValue builtIn="false" value="HEAPMGR_CONFIG=0x80"/>
 									<listOptionValue builtIn="false" value="HEAPMGR_SIZE=0x00"/>
+									<listOptionValue builtIn="false" value="USE_DMM"/>
 								</option>
 								<option id="com.ti.ccstudio.buildDefinitions.TMS470_TICLANG_2.1.compilerID.OPT_LEVEL.1067012096" name="Select optimization paradigm/level (-O)" superClass="com.ti.ccstudio.buildDefinitions.TMS470_TICLANG_2.1.compilerID.OPT_LEVEL" useByScannerDiscovery="false" value="com.ti.ccstudio.buildDefinitions.TMS470_TICLANG_2.1.compilerID.OPT_LEVEL.z" valueType="enumerated"/>
 								<option id="com.ti.ccstudio.buildDefinitions.TMS470_TICLANG_2.1.compilerID.STD_C.1735939212" name="Select assumed C language standard (-std)" superClass="com.ti.ccstudio.buildDefinitions.TMS470_TICLANG_2.1.compilerID.STD_C" useByScannerDiscovery="false" value="com.ti.ccstudio.buildDefinitions.TMS470_TICLANG_2.1.compilerID.STD_C.gnu9x" valueType="enumerated"/>

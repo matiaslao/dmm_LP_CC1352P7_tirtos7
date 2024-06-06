@@ -99,8 +99,15 @@
 #include <cui.h>
 #endif
 
-
 #include "ti_zstack_config.h"
+
+#ifdef USE_DMM
+/* Include DMM module */
+#include "dmm/dmm_policy.h"
+#include "dmm/dmm_scheduler.h"
+#include "dmm/dmm_priority_prop_zigbee_zr.h"
+#include "ti_dmm_application_policy.h"
+#endif
 
 /******************************************************************************
  Constants
@@ -289,6 +296,13 @@ void Main_lowVoltageCb(uint32_t voltage)
  */
 int main()
 {
+#ifdef USE_DMM
+    Task_Handle* pZstackTaskkHndl;
+
+    DMMPolicy_Params dmmPolicyParams;
+    DMMSch_Params dmmSchParams;
+#endif
+
 #ifndef USE_DEFAULT_USER_CFG
     zstack_user0Cfg.macConfig.pAssertFP = assertHandler;
 #endif
@@ -355,6 +369,9 @@ int main()
 #else
     /* configure stack task */
     stackTask_init(&zstack_user0Cfg);
+#ifdef USE_DMM
+    pZstackTaskkHndl = stackTaskGetTaskHndl();
+#endif // USE_DMM
 #endif // ZSTACK_GPD
 
 #ifdef NPI
@@ -392,6 +409,31 @@ int main()
     IOCPortConfigureSet(IOID_8, IOC_PORT_RFC_TRC, IOC_STD_OUTPUT
                     | IOC_CURRENT_4MA | IOC_SLEW_ENABLE);
 #endif /* DEBUG_SW_TRACE */
+
+#ifdef USE_DMM
+    /* initialize and open the DMM policy manager */
+    DMMPolicy_init();
+    DMMPolicy_Params_init(&dmmPolicyParams);
+    dmmPolicyParams.numPolicyTableEntries = DMMPolicy_ApplicationPolicySize;
+    dmmPolicyParams.policyTable = DMMPolicy_ApplicationPolicyTable;
+    dmmPolicyParams.globalPriorityTable = globalPriorityTable_propLzigbeeZrH;
+    DMMPolicy_open(&dmmPolicyParams);
+
+    /* initialize and open the DMM scheduler */
+    DMMSch_init();
+    DMMSch_Params_init(&dmmSchParams);
+    memcpy(dmmSchParams.stackRoles,
+           DMMPolicy_ApplicationPolicyTable.stackRole,
+           sizeof(DMMPolicy_StackRole) * DMMPOLICY_NUM_STACKS);
+    dmmSchParams.indexTable = DMMPolicy_ApplicationPolicyTable.indexTable;
+    DMMSch_open(&dmmSchParams);
+
+    /* register clients with DMM scheduler */
+    DMMSch_registerClient(pZstackTaskkHndl, DMMPolicy_StackRole_ZigbeeRouter);
+
+    /*set the stacks in default states */
+    DMMPolicy_updateStackState(DMMPolicy_StackRole_ZigbeeRouter, DMMPOLICY_ZB_UNINIT);
+#endif
 
     BIOS_start(); /* enable interrupts and start SYS/BIOS */
 

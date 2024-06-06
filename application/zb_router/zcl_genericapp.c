@@ -83,6 +83,12 @@
 #include "touchlink_target_app.h"
 #endif
 
+#ifdef USE_DMM
+#include "dmm/dmm_policy.h"
+#include "ti_dmm_application_policy.h"
+#endif
+
+
 /*********************************************************************
  * MACROS
  */
@@ -241,6 +247,12 @@ static zclGeneral_AppCallbacks_t zclGenericApp_CmdCallbacks =
  *       zclSS_AppCallbacks_t
  *
  */
+
+#ifdef USE_DMM
+zstack_DevState provState = zstack_DevState_HOLD;
+
+DMMPolicy_StackRole DMMPolicy_StackRole_Zigbee = DMMPolicy_StackRole_ZigbeeRouter;
+#endif
 
 /*******************************************************************************
  * @fn          sampleApp_task
@@ -622,13 +634,42 @@ static void zclGenericApp_process_loop( void )
 
           appServiceTaskEvents &= ~GENERICAPP_EVT_2;
         }
-
+        */
+#ifndef USE_DMM
+        /*
         if ( appServiceTaskEvents & GENERICAPP_EVT_3 )
         {
 
           appServiceTaskEvents &= ~GENERICAPP_EVT_3;
         }
         */
+#else
+        if(appServiceTaskEvents & SAMPLEAPP_POLICY_UPDATE_EVT)
+        {
+            static uint32_t stackState = DMMPOLICY_ZB_UNINIT;
+
+            // If uninitialized
+            if( (provState < zstack_DevState_INIT) && (stackState != DMMPOLICY_ZB_UNINIT) )
+            {
+                DMMPolicy_updateApplicationState(DMMPolicy_StackRole_Zigbee, DMMPOLICY_ZB_UNINIT);
+            }
+            // If provisioning
+            else if( (((provState > zstack_DevState_INIT) && (provState < zstack_DevState_DEV_ROUTER)) ||
+                      (provState > zstack_DevState_DEV_ROUTER) ) &&
+                     (stackState != DMMPOLICY_ZB_PROVISIONING) )
+            {
+                DMMPolicy_updateApplicationState(DMMPolicy_StackRole_Zigbee, DMMPOLICY_ZB_PROVISIONING);
+            }
+            // If connected
+            else if( (provState == zstack_DevState_DEV_ROUTER) &&
+                     (stackState != DMMPOLICY_ZB_CONNECTED) )
+            {
+                DMMPolicy_updateApplicationState(DMMPolicy_StackRole_Zigbee, DMMPOLICY_ZB_CONNECTED);
+            }
+
+            appServiceTaskEvents &= ~SAMPLEAPP_POLICY_UPDATE_EVT;
+        }
+#endif // USE_DMM
       }
   }
 }
@@ -716,9 +757,21 @@ static void zclGenericApp_processZStackMsgs(zstackmsg_genericReq_t *pMsg)
         case zstackmsg_CmdIDs_DEV_STATE_CHANGE_IND:
         {
             // The ZStack Thread is indicating a State change
+#ifndef USE_DMM
 //            zstackmsg_devStateChangeInd_t *pInd =
 //                (zstackmsg_devStateChangeInd_t *)pMsg;
 //                  UI_DeviceStateUpdated(&(pInd->req));
+#else
+            zstackmsg_devStateChangeInd_t *pInd =
+                (zstackmsg_devStateChangeInd_t *)pMsg;
+
+            provState = pInd->req.state;
+
+            appServiceTaskEvents |= SAMPLEAPP_POLICY_UPDATE_EVT;
+
+            // Wake up the application thread when it waits for clock event
+            Semaphore_post(appSemHandle);
+#endif
         }
         break;
 
