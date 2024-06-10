@@ -142,6 +142,7 @@
 									<listOptionValue builtIn="false" value="HEAPMGR_CONFIG=0x80"/>
 									<listOptionValue builtIn="false" value="HEAPMGR_SIZE=0x00"/>
 									<listOptionValue builtIn="false" value="USE_DMM"/>
+									<listOptionValue builtIn="false" value="SYSCFG"/>
 								</option>
 								<option id="com.ti.ccstudio.buildDefinitions.TMS470_TICLANG_2.1.compilerID.OPT_LEVEL.1067012096" name="Select optimization paradigm/level (-O)" superClass="com.ti.ccstudio.buildDefinitions.TMS470_TICLANG_2.1.compilerID.OPT_LEVEL" useByScannerDiscovery="false" value="com.ti.ccstudio.buildDefinitions.TMS470_TICLANG_2.1.compilerID.OPT_LEVEL.z" valueType="enumerated"/>
 								<option id="com.ti.ccstudio.buildDefinitions.TMS470_TICLANG_2.1.compilerID.STD_C.1735939212" name="Select assumed C language standard (-std)" superClass="com.ti.ccstudio.buildDefinitions.TMS470_TICLANG_2.1.compilerID.STD_C" useByScannerDiscovery="false" value="com.ti.ccstudio.buildDefinitions.TMS470_TICLANG_2.1.compilerID.STD_C.gnu9x" valueType="enumerated"/>

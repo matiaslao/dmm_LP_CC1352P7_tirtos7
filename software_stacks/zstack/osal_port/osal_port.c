@@ -118,7 +118,7 @@ typedef struct _osalPort_schedule_t
 /***** Private function definitions *****/
 #ifndef FREERTOS_SUPPORT
 // DMM currently uses ICall Heap
-#ifdef USE_DMM
+#if 0   // #ifdef USE_DMM replaced as suggested by Ryan Brown (TI) in the 'AMPT - CC1352P7 RF Switching Protocol Debug'
 extern void *ICall_heapMalloc(uint32_t size);
 extern void *ICall_heapRealloc(void *blk, uint32_t size);
 extern void ICall_heapFree(void *blk);

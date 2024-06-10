@@ -47,16 +47,12 @@
 /******************************************************************************
  * INCLUDES
  */
-#warning "Not sure about these includes... Shouldn't I remap here the calls to RF driver to the ones from DMM? (by M. Lao)"
-#if 1
-#include "dmm/dmm_rfmap.h"
-#else
+// #warning "Not sure about these includes... DMM example which uses Zstack (router) and BLE has USE_DMM and SYSCFG symbols defined!"
 #if (defined(USE_DMM) && !defined(SYSCFG))
 #include "Board.h"
 #else
 #include "ti_drivers_config.h"
 #endif
-#endif // 1
 
 #include "ti_radio_config.h"
 #include <ti15_4stack/radio_configuration/mac_user_config.h>

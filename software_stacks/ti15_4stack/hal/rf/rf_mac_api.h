@@ -1,12 +1,14 @@
 /******************************************************************************
-
- @file  rf_mac_api.h
-
- @brief Header for RF proxy for stack's interface to the RF driver.
-
+ *  @file  rf_mac_api.h
+ *
+ *  @brief      Header for RF proxy for stack's interface to the RF driver with 
+ *              Dynamic Multi-protocol Manager RF API remapping
+ *
+ *  The dmm_rfmap header file remaps select functions in the RF driver API the
+ *  DMM equivalents that are defined in the dmm_schedular module so that
+ *  priorities and timing can be set according to the dual mode manager policy
  Group: WCS, BTS
  Target Device: cc13xx_cc26xx
-
  ******************************************************************************
  
  Copyright (c) 2015-2022, Texas Instruments Incorporated
@@ -43,7 +45,6 @@
  
  
  *****************************************************************************/
-
 #ifndef RF_API_H
 #define RF_API_H
 
@@ -57,6 +58,7 @@ extern "C"
  */
 
 #include <ti/drivers/rf/RF.h>
+#include <dmm/dmm_scheduler.h>
 
 extern uint32_t *macRfDrvTblPtr;
 extern void rfSpinlock( void );
@@ -69,69 +71,36 @@ extern void rfSpinlock( void );
  * CONSTANTS
  */
 
-// RF proxy index for RF driver API
-#define RF_OPEN                        0
-#define RF_CLOSE                       1
-#define RF_POST_CMD                    2
-#define RF_PEND_CMD                    3
-#define RF_RUN_CMD                     4
-#define RF_CANCEL_CMD                  5
-#define RF_FLUSH_CMD                   6
-#define RF_YIELD                       7
-#define RF_PARAMS_INIT                 8
-#define RF_RUN_IMMED_CMD               9
-#define RF_RUN_DIRECT_CMD              10
-#define RF_RAT_COMPARE                 11
-#define RF_RAT_CAPTURE                 12
-#define RF_RAT_CONFIG_OUTPUT_INIT      13
-#define RF_RAT_DISABLE_CHAN            14
-#define RF_GET_CURRENT_TIME            15
-#define RF_GET_RSSI                    16
-#define RF_GET_INFO                    17
-#define RF_GET_CMD_OP                  18
-#define RF_CONTROL                     19
-#define RF_SCHEDULE_CMD                20
-#define RF_GET_TX_POWER                21
-#define RF_SET_TX_POWER                22
-#define RF_TX_FIND_LEVEL               23
-#define RF_TX_FIND_VALUE               24
-#define RF_SCHEDULE_PARAMS_INIT        25
-#define RF_REQUEST_ACCESS              26
 
-/*
-** RF API Proxy
-*/
+#define RF_open              ((RF_Handle    (*)(RF_Object *, RF_Mode *, RF_RadioSetup *, RF_Params *))       DMMSch_rfOpen)
+#define RF_close             ((void         (*)(RF_Handle))                                                  RF_close)
+#define RF_postCmd           ((RF_CmdHandle (*)(RF_Handle, RF_Op *, RF_Priority, RF_Callback, RF_EventMask)) DMMSch_rfPostCmd)
+#define RF_pendCmd           ((RF_EventMask (*)(RF_Handle, RF_CmdHandle, RF_EventMask))                      RF_pendCmd)
+#define RF_runCmd            ((RF_EventMask (*)(RF_Handle, RF_Op *, RF_Priority, RF_Callback, RF_EventMask)) DMMSch_rfRunCmd)
+#define RF_cancelCmd         ((RF_Stat      (*)(RF_Handle, RF_CmdHandle, uint8_t))                           DMMSch_rfCancelCmd)
+#define RF_flushCmd          ((RF_Stat      (*)(RF_Handle, RF_CmdHandle, uint8_t))                           DMMSch_rfFlushCmd)
+#define RF_yield             ((void         (*)(RF_Handle))                                                  RF_yield)
+#define RF_Params_init       ((void         (*)(RF_Params *))                                                RF_Params_init)
+#define RF_runImmediateCmd   ((RF_Stat      (*)(RF_Handle, uint32_t *))                                      DMMSch_rfRunImmediateCmd)
+#define RF_runDirectCmd      ((RF_Stat      (*)(RF_Handle, uint32_t))                                        DMMSch_rfRunDirectCmd)
+#define RF_ratCompare        ((RF_RatHandle       (*)(RF_Handle, RF_RatConfigCompare *, RF_RatConfigOutput *))     RF_ratCompare)
+#define RF_ratCapture        ((RF_RatHandle       (*)(RF_Handle, RF_RatConfigCapture *, RF_RatConfigOutput *))     RF_ratCapture)
+#define RF_RatConfigOutput_init       ((void      (*)(RF_RatConfigOutput *))                                 RF_RatConfigOutput_init)
+#define RF_ratDisableChannel ((RF_Stat      (*)(RF_Handle, RF_RatHandle))                                    RF_ratDisableChannel)
+#define RF_getCurrentTime    ((uint32_t     (*)(void))                                                       RF_getCurrentTime)
+#define RF_getRssi           ((int8_t       (*)(RF_Handle))                                                  RF_getRssi)
+#define RF_getInfo           ((RF_Stat      (*)(RF_Handle, RF_InfoType, RF_InfoVal *))                       RF_getInfo)
+#define RF_getCmdOp          ((RF_Op *      (*)(RF_Handle, RF_CmdHandle))                                    RF_getCmdOp)
+#define RF_control           ((RF_Stat      (*)(RF_Handle, int8_t, void *))                                  RF_control)
+#define RF_scheduleCmd       ((RF_CmdHandle (*)(RF_Handle, RF_Op *, RF_ScheduleCmdParams *, RF_Callback, RF_EventMask))  DMMSch_rfScheduleCmd)
+#define RF_getTxPower        ((RF_TxPowerTable_Value      (*)(RF_Handle))                                    RF_getTxPower)
+#define RF_setTxPower        ((RF_Stat      (*)(RF_Handle, RF_TxPowerTable_Value))                           RF_setTxPower)
+#define RF_TxPowerTable_findPowerLevel        ((int8_t      (*)(RF_TxPowerTable_Entry *, RF_TxPowerTable_Value))  RF_TxPowerTable_findPowerLevel)
+#define RF_TxPowerTable_findValue        ((RF_TxPowerTable_Value      (*)(RF_TxPowerTable_Entry *, int8_t))  RF_TxPowerTable_findValue)
+#define RF_ScheduleCmdParams_init        ((void      (*)(RF_ScheduleCmdParams *))                            RF_ScheduleCmdParams_init)
+#define RF_requestAccess     ((RF_Stat (*)(RF_Handle h, RF_AccessParams *pParams))                            DMMSch_rfRequestAccess)
+#define RF_runScheduleCmd    ((RF_EventMask (*) (RF_Handle, RF_Op*, RF_ScheduleCmdParams*, RF_Callback, RF_EventMask)) DMMSch_rfRunScheduleCmd)
 
-#define RF_TABLE( index )   (*((uint32_t *)((uint32_t)macRfDrvTblPtr + (uint32_t)((index)*4))))
-//#define RF_TABLE( index )  ((macRfDrvTblPtr==NULL)?(uint32_t)rfSpinlock:(*((uint32_t *)((uint32_t)macRfDrvTblPtr + (uint32_t)((index)*4)))))
-
-#define RF_open              ((RF_Handle    (*)(RF_Object *, RF_Mode *, RF_RadioSetup *, RF_Params *))       RF_TABLE(RF_OPEN))
-#define RF_close             ((void         (*)(RF_Handle))                                                  RF_TABLE(RF_CLOSE))
-#define RF_postCmd           ((RF_CmdHandle (*)(RF_Handle, RF_Op *, RF_Priority, RF_Callback, RF_EventMask)) RF_TABLE(RF_POST_CMD))
-#define RF_pendCmd           ((RF_EventMask (*)(RF_Handle, RF_CmdHandle, RF_EventMask))                      RF_TABLE(RF_PEND_CMD))
-#define RF_runCmd            ((RF_EventMask (*)(RF_Handle, RF_Op *, RF_Priority, RF_Callback, RF_EventMask)) RF_TABLE(RF_RUN_CMD))
-#define RF_cancelCmd         ((RF_Stat      (*)(RF_Handle, RF_CmdHandle, uint8_t))                           RF_TABLE(RF_CANCEL_CMD))
-#define RF_flushCmd          ((RF_Stat      (*)(RF_Handle, RF_CmdHandle, uint8_t))                           RF_TABLE(RF_FLUSH_CMD))
-#define RF_yield             ((void         (*)(RF_Handle))                                                  RF_TABLE(RF_YIELD))
-#define RF_Params_init       ((void         (*)(RF_Params *))                                                RF_TABLE(RF_PARAMS_INIT))
-#define RF_runImmediateCmd   ((RF_Stat      (*)(RF_Handle, uint32_t *))                                      RF_TABLE(RF_RUN_IMMED_CMD))
-#define RF_runDirectCmd      ((RF_Stat      (*)(RF_Handle, uint32_t))                                        RF_TABLE(RF_RUN_DIRECT_CMD))
-#define RF_ratCompare        ((RF_RatHandle       (*)(RF_Handle, RF_RatConfigCompare *, RF_RatConfigOutput *))     RF_TABLE(RF_RAT_COMPARE))
-#define RF_ratCapture        ((RF_RatHandle       (*)(RF_Handle, RF_RatConfigCapture *, RF_RatConfigOutput *))     RF_TABLE(RF_RAT_CAPTURE))
-#define RF_RatConfigOutput_init       ((void      (*)(RF_RatConfigOutput *))                                 RF_TABLE(RF_RAT_CONFIG_OUTPUT_INIT))
-#define RF_ratDisableChannel ((RF_Stat      (*)(RF_Handle, RF_RatHandle))                                    RF_TABLE(RF_RAT_DISABLE_CHAN))
-#define RF_getCurrentTime    ((uint32_t     (*)(void))                                                       RF_TABLE(RF_GET_CURRENT_TIME))
-#define RF_getRssi           ((int8_t       (*)(RF_Handle))                                                  RF_TABLE(RF_GET_RSSI))
-#define RF_getInfo           ((RF_Stat      (*)(RF_Handle, RF_InfoType, RF_InfoVal *))                       RF_TABLE(RF_GET_INFO))
-#define RF_getCmdOp          ((RF_Op *      (*)(RF_Handle, RF_CmdHandle))                                    RF_TABLE(RF_GET_CMD_OP))
-#define RF_control           ((RF_Stat      (*)(RF_Handle, int8_t, void *))                                  RF_TABLE(RF_CONTROL))
-#define RF_scheduleCmd       ((RF_CmdHandle (*)(RF_Handle, RF_Op *, RF_ScheduleCmdParams *, RF_Callback, RF_EventMask))  RF_TABLE(RF_SCHEDULE_CMD))
-#define RF_getTxPower        ((RF_TxPowerTable_Value      (*)(RF_Handle))                                    RF_TABLE(RF_GET_TX_POWER))
-#define RF_setTxPower        ((RF_Stat      (*)(RF_Handle, RF_TxPowerTable_Value))                           RF_TABLE(RF_SET_TX_POWER))
-#define RF_TxPowerTable_findPowerLevel        ((int8_t      (*)(RF_TxPowerTable_Entry *, RF_TxPowerTable_Value))  RF_TABLE(RF_TX_FIND_LEVEL))
-#define RF_TxPowerTable_findValue        ((RF_TxPowerTable_Value      (*)(RF_TxPowerTable_Entry *, int8_t))  RF_TABLE(RF_TX_FIND_VALUE))
-#define RF_ScheduleCmdParams_init        ((void      (*)(RF_ScheduleCmdParams *))                            RF_TABLE(RF_SCHEDULE_PARAMS_INIT))
-#define RF_requestAccess                 ((void      (*)(RF_Handle h, RF_AccessParams *pParams))             RF_TABLE(RF_REQUEST_ACCESS))
 
 #ifdef __cplusplus
 }
