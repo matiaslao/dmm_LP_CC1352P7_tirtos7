@@ -9,6 +9,7 @@
  * Import the modules used in this configuration.
  */
 const CCFG         = scripting.addModule("/ti/devices/CCFG");
+const custom       = scripting.addModule("/ti/devices/radioconfig/custom");
 const rfdesign     = scripting.addModule("/ti/devices/radioconfig/rfdesign");
 const Display      = scripting.addModule("/ti/display/Display");
 const Display1     = Display.addInstance();
@@ -46,7 +47,7 @@ const GateMutexPri = scripting.addModule("/ti/sysbios/gates/GateMutexPri");
 const HeapCallback = scripting.addModule("/ti/sysbios/heaps/HeapCallback");
 const Clock        = scripting.addModule("/ti/sysbios/knl/Clock");
 const Idle         = scripting.addModule("/ti/sysbios/knl/Idle");
-const Idle1        = Idle.addInstance();
+const Idle2        = Idle.addInstance();
 const Semaphore    = scripting.addModule("/ti/sysbios/knl/Semaphore");
 const Swi          = scripting.addModule("/ti/sysbios/knl/Swi");
 const Task         = scripting.addModule("/ti/sysbios/knl/Task");
@@ -66,6 +67,13 @@ CCFG.enableBootloaderBackdoor = true;
 CCFG.dioBootloaderBackdoor    = 15;
 CCFG.levelBootloaderBackdoor  = "Active low";
 CCFG.ccfgTemplate.$name       = "ti_devices_CCFG_CCFGCC26XXTemplate0";
+
+custom.prop4                                                      = ["2gfsk50kbps433mhz"];
+custom.radioConfig2gfsk50kbps433mhz.$name                         = "ti_devices_radioconfig_settings_prop0";
+custom.radioConfig2gfsk50kbps433mhz.txPower433                    = "10";
+custom.radioConfig2gfsk50kbps433mhz.codeExportConfig.$name        = "ti_devices_radioconfig_code_export_param1";
+custom.radioConfig2gfsk50kbps433mhz.codeExportConfig.symGenMethod = "Custom";
+custom.radioConfig2gfsk50kbps433mhz.codeExportConfig.paExport     = "combined";
 
 rfdesign.rfDesign = "LP_CC1352P7-4";
 
@@ -166,8 +174,8 @@ Clock.swiPriority = 4;
 
 const Timer = scripting.addModule("/ti/sysbios/family/arm/cc26xx/Timer", {}, false);
 
-Idle1.$name   = "powerIdle";
-Idle1.idleFxn = "Power_idleFunc";
+Idle2.$name   = "powerIdle";
+Idle2.idleFxn = "Power_idleFunc";
 
 Semaphore.supportsPriority = false;
 
@@ -204,7 +212,7 @@ zstack.advanced.tableSize.$name              = "ti_zstack_advanced_zstack_table_
  * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
  * re-solve from scratch.
  */
-Display1.uart.uart.$suggestSolution           = "UART0";
+Display1.uart.uart.$suggestSolution           = "UART1";
 Display1.uart.uart.txPin.$suggestSolution     = "boosterpack.4";
 Display1.uart.uart.rxPin.$suggestSolution     = "boosterpack.3";
 RF.rfAntennaPin0.$suggestSolution             = "ball.41";

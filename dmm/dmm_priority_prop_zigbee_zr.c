@@ -51,20 +51,20 @@
 /* PROP Activity */
 typedef enum
 {
-DMM_PROP_RX_TX = 0x0A01,
-DMM_PROP_FS    = 0x0A02,
+    DMM_PROP_RX_TX = 0x0A01,
+    DMM_PROP_FS    = 0x0A02,
 } DMMStackActivityPROP;
 
 /* Zigbee Activity */
 typedef enum
 {
-    DMM_ZB_DATA =0x0006,       
-    DMM_ZB_LINK_EST =0x0001,
-    DMM_ZB_TX_BEACON =0x0002,
-    DMM_ZB_RX_BEACON =0x0003,
-    DMM_ZB_FH =0x0004,
-    DMM_ZB_SCAN =0x0005,
-    DMM_ZB_RXON = 0x0007,
+    DMM_ZB_DATA         = 0x0006,
+    DMM_ZB_LINK_EST     = 0x0001,
+    DMM_ZB_TX_BEACON    = 0x0002,
+    DMM_ZB_RX_BEACON    = 0x0003,
+    DMM_ZB_FH           = 0x0004,
+    DMM_ZB_SCAN         = 0x0005,
+    DMM_ZB_RXON         = 0x0007,
 } DMMStackActivityZB;
 
 
@@ -72,13 +72,13 @@ typedef enum
 StackActivity activityPROP_propLzigbeeZrH[ACTIVITY_NUM_PROP*PRIORITY_NUM] =
 {
     /* Activity order matters */
-    DMM_GLOBAL_PRIORITY(DMM_PROP_RX_TX, DMM_StackPNormal, 90),
+    DMM_GLOBAL_PRIORITY(DMM_PROP_RX_TX, DMM_StackPNormal, 30),
     DMM_GLOBAL_PRIORITY(DMM_PROP_RX_TX, DMM_StackPHigh, 180),
-    DMM_GLOBAL_PRIORITY(DMM_PROP_RX_TX, DMM_StackPUrgent, 240),
+    DMM_GLOBAL_PRIORITY(DMM_PROP_RX_TX, DMM_StackPUrgent, 230),
 
-    DMM_GLOBAL_PRIORITY(DMM_PROP_FS, DMM_StackPNormal, 90),
+    DMM_GLOBAL_PRIORITY(DMM_PROP_FS, DMM_StackPNormal, 250),
     DMM_GLOBAL_PRIORITY(DMM_PROP_FS, DMM_StackPHigh, 180),
-    DMM_GLOBAL_PRIORITY(DMM_PROP_FS, DMM_StackPUrgent, 240),
+    DMM_GLOBAL_PRIORITY(DMM_PROP_FS, DMM_StackPUrgent, 230),
 };
 
 

@@ -297,7 +297,8 @@ void Main_lowVoltageCb(uint32_t voltage)
 int main()
 {
 #ifdef USE_DMM
-    Task_Handle* pZstackTaskkHndl;
+    Task_Handle* pZstackTaskHndl;
+    Task_Handle* pPropTaskHndl;
 
     DMMPolicy_Params dmmPolicyParams;
     DMMSch_Params dmmSchParams;
@@ -370,7 +371,10 @@ int main()
     /* configure stack task */
     stackTask_init(&zstack_user0Cfg);
 #ifdef USE_DMM
-    pZstackTaskkHndl = stackTaskGetTaskHndl();
+    pZstackTaskHndl = stackTaskGetTaskHndl();
+
+    extern Task_Handle* rfEchoRx_createRadioTask();
+    pPropTaskHndl = rfEchoRx_createRadioTask();
 #endif // USE_DMM
 #endif // ZSTACK_GPD
 
@@ -422,17 +426,17 @@ int main()
     /* initialize and open the DMM scheduler */
     DMMSch_init();
     DMMSch_Params_init(&dmmSchParams);
-    memcpy(dmmSchParams.stackRoles,
-           DMMPolicy_ApplicationPolicyTable.stackRole,
-           sizeof(DMMPolicy_StackRole) * DMMPOLICY_NUM_STACKS);
+    memcpy(dmmSchParams.stackRoles, DMMPolicy_ApplicationPolicyTable.stackRole, sizeof(DMMPolicy_StackRole) * DMMPOLICY_NUM_STACKS);
     dmmSchParams.indexTable = DMMPolicy_ApplicationPolicyTable.indexTable;
     DMMSch_open(&dmmSchParams);
 
     /* register clients with DMM scheduler */
-    DMMSch_registerClient(pZstackTaskkHndl, DMMPolicy_StackRole_ZigbeeRouter);
+    DMMSch_registerClient(pZstackTaskHndl, DMMPolicy_StackRole_ZigbeeRouter);
+    DMMSch_registerClient(pPropTaskHndl, DMMPolicy_StackRole_custom1);
 
-    /*set the stacks in default states */
-    DMMPolicy_updateStackState(DMMPolicy_StackRole_ZigbeeRouter, DMMPOLICY_ZB_UNINIT);
+    /* set the stacks in default states */
+    DMMPolicy_updateApplicationState(DMMPolicy_StackRole_ZigbeeRouter, DMMPOLICY_ZB_UNINIT);
+    DMMPolicy_updateApplicationState(DMMPolicy_StackRole_custom1, DMMPOLICY_ANY);
 #endif
 
     BIOS_start(); /* enable interrupts and start SYS/BIOS */
