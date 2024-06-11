@@ -1,4 +1,6 @@
+.launches
 .settings
-default
-release
+/default
+/release
+/debug
 *.html

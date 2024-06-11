@@ -24,8 +24,8 @@
 // *********************************************************************************
 //   RF Frontend configuration
 // *********************************************************************************
-// RF design based on: LP_CC1352P7-4
-#define LP_CC1352P7_4
+// RF design based on: LP_CC1352P7-1
+#define LP_CC1352P7_1
 
 // High-Power Amplifier supported
 #define SUPPORT_HIGH_PA
@@ -38,17 +38,17 @@
 
 // Supported frequency bands
 #define SUPPORT_FREQBAND_2400
-#define SUPPORT_FREQBAND_433
+#define SUPPORT_FREQBAND_868
 
 // TX power table size definitions
 #define TXPOWERTABLE_2400_PA5_SIZE 16 // 2400 MHz, 5 dBm
-#define TXPOWERTABLE_2400_PA5_10_SIZE 21 // 2400 MHz, 5 + 10 dBm
-#define TXPOWERTABLE_433_PA13_SIZE 18 // 433 MHz, 13 dBm
+#define TXPOWERTABLE_868_PA13_SIZE 20 // 868 MHz, 13 dBm
+#define TXPOWERTABLE_868_PA13_20_SIZE 25 // 868 MHz, 13 + 20 dBm
 
 // TX power tables
 extern RF_TxPowerTable_Entry txPowerTable_2400_pa5[]; // 2400 MHz, 5 dBm
-extern RF_TxPowerTable_Entry txPowerTable_2400_pa5_10[]; // 2400 MHz, 5 + 10 dBm
-extern RF_TxPowerTable_Entry txPowerTable_433_pa13[]; // 433 MHz, 13 dBm
+extern RF_TxPowerTable_Entry txPowerTable_868_pa13[]; // 868 MHz, 13 dBm
+extern RF_TxPowerTable_Entry txPowerTable_868_pa13_20[]; // 868 MHz, 13 + 20 dBm
 
 
 
@@ -80,16 +80,16 @@ extern uint32_t pOverrides_ieee154[];
 
 
 //*********************************************************************************
-//  RF Setting:   50 kbps, 25kHz Deviation, 2-GFSK, 78 kHz RX Bandwidth
+//  RF Setting:   50 kbps, 25 kHz Deviation, 2-GFSK, 100 kHz RX Bandwidth
 //
-//  PHY:          2gfsk50kbps433mhz
-//  Setting file: setting_tc112.json
+//  PHY:          2gfsk50kbps
+//  Setting file: setting_tc706.json
 //*********************************************************************************
 
 // PA table usage
-#define TX_POWER_TABLE_SIZE TXPOWERTABLE_433_PA13_SIZE
+#define TX_POWER_TABLE_SIZE TXPOWERTABLE_868_PA13_20_SIZE
 
-#define txPowerTable txPowerTable_433_pa13
+#define txPowerTable txPowerTable_868_pa13_20
 
 // TI-RTOS RF Mode object
 extern RF_Mode RF_prop;
