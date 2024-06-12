@@ -437,6 +437,9 @@ int main()
     /* set the stacks in default states */
     DMMPolicy_updateApplicationState(DMMPolicy_StackRole_ZigbeeRouter, DMMPOLICY_ZB_UNINIT);
     DMMPolicy_updateApplicationState(DMMPolicy_StackRole_custom1, DMMPOLICY_ANY);
+
+    /* Turn BlockMode ON for Zstack stack */
+    DMMPolicy_setBlockModeOn(DMMPolicy_StackRole_ZigbeeRouter);
 #endif
 
     BIOS_start(); /* enable interrupts and start SYS/BIOS */

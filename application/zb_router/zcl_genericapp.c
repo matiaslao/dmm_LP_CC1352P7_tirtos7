@@ -1278,7 +1278,19 @@ static void zclGenericApp_processKey(Button_Handle _btn)
     //Button 2
     if(_btn == gRightButtonHandle)
     {
+#ifndef USE_DMM
         Zstackapi_bdbResetLocalActionReq(appServiceTaskId);
+#else
+        // Use right button to set on/off Block Mode on RF Prop protocol
+        if ( DMMPolicy_getBlockModeStatus(DMMPolicy_StackRole_custom1) )
+        {
+            // RF stack is currently in Block Mode, so turn it OFF.
+            DMMPolicy_setBlockModeOff(DMMPolicy_StackRole_custom1);
+        } else {
+            // RF stack is currently NOT in Block Mode, so turn it ON.
+            DMMPolicy_setBlockModeOn(DMMPolicy_StackRole_custom1);
+        }
+#endif
     }
 
 }
