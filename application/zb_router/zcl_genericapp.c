@@ -1263,17 +1263,24 @@ static void zclGenericApp_processKey(Button_Handle _btn)
     //Button 1
     if(_btn == gLeftButtonHandle)
     {
-        if(ZG_BUILD_COORDINATOR_TYPE && ZG_DEVICE_COORDINATOR_TYPE)
+#ifdef USE_DMM
+        if ( !DMMPolicy_getBlockModeStatus(DMMPolicy_StackRole_ZigbeeRouter) )
         {
+#endif
+            if(ZG_BUILD_COORDINATOR_TYPE && ZG_DEVICE_COORDINATOR_TYPE)
+            {
 
-            zstack_bdbStartCommissioningReq.commissioning_mode = BDB_COMMISSIONING_MODE_NWK_FORMATION | BDB_COMMISSIONING_MODE_NWK_STEERING | BDB_COMMISSIONING_MODE_FINDING_BINDING;
-            Zstackapi_bdbStartCommissioningReq(appServiceTaskId,&zstack_bdbStartCommissioningReq);
+                zstack_bdbStartCommissioningReq.commissioning_mode = BDB_COMMISSIONING_MODE_NWK_FORMATION | BDB_COMMISSIONING_MODE_NWK_STEERING | BDB_COMMISSIONING_MODE_FINDING_BINDING;
+                Zstackapi_bdbStartCommissioningReq(appServiceTaskId,&zstack_bdbStartCommissioningReq);
+            }
+            else if (ZG_BUILD_JOINING_TYPE && ZG_DEVICE_JOINING_TYPE)
+            {
+                zstack_bdbStartCommissioningReq.commissioning_mode = BDB_COMMISSIONING_MODE_NWK_STEERING | BDB_COMMISSIONING_MODE_FINDING_BINDING;
+                Zstackapi_bdbStartCommissioningReq(appServiceTaskId,&zstack_bdbStartCommissioningReq);
+            }
+#ifdef USE_DMM
         }
-        else if (ZG_BUILD_JOINING_TYPE && ZG_DEVICE_JOINING_TYPE)
-        {
-            zstack_bdbStartCommissioningReq.commissioning_mode = BDB_COMMISSIONING_MODE_NWK_STEERING | BDB_COMMISSIONING_MODE_FINDING_BINDING;
-            Zstackapi_bdbStartCommissioningReq(appServiceTaskId,&zstack_bdbStartCommissioningReq);
-        }
+#endif
     }
     //Button 2
     if(_btn == gRightButtonHandle)
@@ -1281,14 +1288,20 @@ static void zclGenericApp_processKey(Button_Handle _btn)
 #ifndef USE_DMM
         Zstackapi_bdbResetLocalActionReq(appServiceTaskId);
 #else
-        // Use right button to set on/off Block Mode on RF Prop protocol
+        // Use right button to switch between RF protocols.
         if ( DMMPolicy_getBlockModeStatus(DMMPolicy_StackRole_custom1) )
         {
-            // RF stack is currently in Block Mode, so turn it OFF.
+            // If RF prop protocol is in block mode, block the Zstack
+            // stack first, and then unblock the proprietary stack.
+            DMMPolicy_setBlockModeOn(DMMPolicy_StackRole_ZigbeeRouter);
             DMMPolicy_setBlockModeOff(DMMPolicy_StackRole_custom1);
-        } else {
-            // RF stack is currently NOT in Block Mode, so turn it ON.
+        }
+        else
+        {
+            // If RF prop protocol is NOT in block mode, block the
+            // custom stack and then unblock Zstack stack.
             DMMPolicy_setBlockModeOn(DMMPolicy_StackRole_custom1);
+            DMMPolicy_setBlockModeOff(DMMPolicy_StackRole_ZigbeeRouter);
         }
 #endif
     }

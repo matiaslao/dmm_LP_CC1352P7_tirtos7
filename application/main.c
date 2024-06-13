@@ -438,8 +438,12 @@ int main()
     DMMPolicy_updateApplicationState(DMMPolicy_StackRole_ZigbeeRouter, DMMPOLICY_ZB_UNINIT);
     DMMPolicy_updateApplicationState(DMMPolicy_StackRole_custom1, DMMPOLICY_ANY);
 
-    /* Turn BlockMode ON for Zstack stack */
-    //DMMPolicy_setBlockModeOn(DMMPolicy_StackRole_ZigbeeRouter);
+    /* For testing purposes, turn BlockMode ON for Zstack stack.
+     * Only custom stack is running during initialization. It
+     * should be used then the right button from the LaunchPad
+     * to switch between the RF protocols.
+     */
+    DMMPolicy_setBlockModeOn(DMMPolicy_StackRole_ZigbeeRouter);
 #endif
 
     BIOS_start(); /* enable interrupts and start SYS/BIOS */
