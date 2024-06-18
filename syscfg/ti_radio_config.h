@@ -80,16 +80,16 @@ extern uint32_t pOverrides_ieee154[];
 
 
 //*********************************************************************************
-//  RF Setting:   50 kbps, 25 kHz Deviation, 2-GFSK, 100 kHz RX Bandwidth
+//  RF Setting:   100 kbps, 50 kHz Deviation, 2-GFSK, 311 kHz RX Bandwidth (Preview settings)
 //
-//  PHY:          2gfsk50kbps
-//  Setting file: setting_tc706.json
+//  PHY:          2gfsk100kbps
+//  Setting file: setting_tc900.json
 //*********************************************************************************
 
 // PA table usage
-#define TX_POWER_TABLE_SIZE TXPOWERTABLE_868_PA13_20_SIZE
+#define TX_POWER_TABLE_SIZE TXPOWERTABLE_2400_PA5_SIZE
 
-#define txPowerTable txPowerTable_868_pa13_20
+#define txPowerTable txPowerTable_2400_pa5
 
 // TI-RTOS RF Mode object
 extern RF_Mode RF_prop;
