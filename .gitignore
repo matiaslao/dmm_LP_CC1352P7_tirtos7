@@ -1,6 +1,12 @@
 .launches
 .settings
+*.html
+
+# Generated files from *.syscfg configuration are ignored for the repo.
+/syscfg
+
+# Generated files and directories (based on configuration) are ignored for the repo.
 /default
+/default_lp
 /release
 /debug
-*.html

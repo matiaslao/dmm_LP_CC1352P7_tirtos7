@@ -68,12 +68,12 @@ CCFG.dioBootloaderBackdoor    = 15;
 CCFG.levelBootloaderBackdoor  = "Active low";
 CCFG.ccfgTemplate.$name       = "ti_devices_CCFG_CCFGCC26XXTemplate0";
 
-custom.prop4                                                      = ["2gfsk50kbps433mhz"];
-custom.radioConfig2gfsk50kbps433mhz.$name                         = "ti_devices_radioconfig_settings_prop0";
-custom.radioConfig2gfsk50kbps433mhz.txPower433                    = "10";
-custom.radioConfig2gfsk50kbps433mhz.codeExportConfig.$name        = "ti_devices_radioconfig_code_export_param1";
-custom.radioConfig2gfsk50kbps433mhz.codeExportConfig.symGenMethod = "Custom";
-custom.radioConfig2gfsk50kbps433mhz.codeExportConfig.paExport     = "combined";
+custom.prop2                                                 = ["2gfsk100kbps"];
+custom.radioConfig2gfsk100kbps.$name                         = "ti_devices_radioconfig_settings_prop1";
+custom.radioConfig2gfsk100kbps.txPower2400                   = "0";
+custom.radioConfig2gfsk100kbps.codeExportConfig.$name        = "ti_devices_radioconfig_code_export_param2";
+custom.radioConfig2gfsk100kbps.codeExportConfig.paExport     = "combined";
+custom.radioConfig2gfsk100kbps.codeExportConfig.symGenMethod = "Custom";
 
 rfdesign.rfDesign = "LP_CC1352P7-4";
 
