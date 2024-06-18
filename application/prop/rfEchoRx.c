@@ -38,15 +38,13 @@
 
 /* TI Drivers & DMM */
 #ifdef USE_DMM
-#if 0
-#include "dmm/dmm_rfmap.h"
-#else
 #include "rf_mac_api.h"
-#endif
 #include "dmm/dmm_scheduler.h"
 #include "dmm/dmm_policy.h"
 
 #include "ti_dmm_application_policy.h"
+
+#include <ti/sysbios/knl/Clock.h>
 #else
 #include <ti/drivers/rf/RF.h>
 #endif
@@ -187,6 +185,19 @@ void *mainThread(void *arg0)
         GPIO_write(CONFIG_GPIO_GLED, CONFIG_GPIO_LED_ON);
         while(1);
     }
+
+#ifdef USE_DMM
+    /*
+     * Add a 500 ms delay before blocking Zstack stack and
+     * requesting access to the radio with the custom stack.
+     *
+     * As mentioned in main.c, blocking Zstack stack before
+     * starting the BIOS, was not conducting to the expected
+     * results.
+     */
+    Task_sleep(500 * (1000 / Clock_tickPeriod));
+    DMMPolicy_setBlockModeOn(DMMPolicy_StackRole_ZigbeeRouter);
+#endif
 
     /* Modify CMD_PROP_TX and CMD_PROP_RX commands for application needs */
     /* Set the Data Entity queue for received data */

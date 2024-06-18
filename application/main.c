@@ -407,7 +407,7 @@ int main()
     taskParams.priority = 2;
     Task_construct(&myTask, taskFxn, &taskParams, NULL);
 
-#endif
+#endif // ZNP_NPI
 
 #ifdef DEBUG_SW_TRACE
     IOCPortConfigureSet(IOID_8, IOC_PORT_RFC_TRC, IOC_STD_OUTPUT
@@ -442,8 +442,13 @@ int main()
      * Only custom stack is running during initialization. It
      * should be used then the right button from the LaunchPad
      * to switch between the RF protocols.
+     *
+     * NOTE: it has been observed that blocking any stack here
+     * does not effectively block the corresponding stack. This
+     * is why the code line below is commented.
+     *
+     * DMMPolicy_setBlockModeOn(DMMPolicy_StackRole_ZigbeeRouter);
      */
-    DMMPolicy_setBlockModeOn(DMMPolicy_StackRole_ZigbeeRouter);
 #endif
 
     BIOS_start(); /* enable interrupts and start SYS/BIOS */
