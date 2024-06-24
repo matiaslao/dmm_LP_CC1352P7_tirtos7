@@ -276,7 +276,6 @@ void *mainThread(void *arg0)
         {
             case 0:
                 // A radio operation command was sent, but the stack is blocked.
-                GPIO_toggle(CONFIG_GPIO_GLED);
                 break;
             case RF_EventLastCmdDone:
                 // A stand-alone radio operation command or the last radio
